@@ -3,7 +3,9 @@ package Desafio.Back.End.Itau.demo.Services;
 
 
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import Desafio.Back.End.Itau.demo.Dtos.TransacoesRecords;
+import Desafio.Back.End.Itau.demo.Models.Statics;
 import Desafio.Back.End.Itau.demo.Models.Transacoes;
 
 @Service
@@ -30,4 +33,14 @@ public class TransacoesService {
         return ResponseEntity.status(HttpStatus.OK).body("Todas as informações foram apagadas com sucesso");
     }
 
+    public  DoubleSummaryStatistics getStatics(){
+        DoubleSummaryStatistics statistics =  dados
+            .stream()
+            .collect(Collectors.summarizingDouble(Transacoes::getValor));
+            return statistics;
+    }
+    public ResponseEntity<Statics> mostraStatics(){
+        Statics statics = new Statics(getStatics());
+        return ResponseEntity.status(HttpStatus.OK).body(statics);
+    }
 }
