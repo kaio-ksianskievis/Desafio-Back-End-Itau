@@ -2,6 +2,7 @@ package Desafio.Back.End.Itau.demo.Services;
 
 
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
@@ -21,8 +22,12 @@ public class TransacoesService {
     
     private List<Transacoes> dados = new ArrayList<>();
 
-    public ResponseEntity<Transacoes> criarTransacao(TransacoesRecords transacoesRecords){
+    public ResponseEntity<Object> criarTransacao(TransacoesRecords transacoesRecords){
         Transacoes model = new Transacoes();
+        OffsetDateTime now = OffsetDateTime.now();
+        if(transacoesRecords.dataHora().isAfter(now)){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+        }
         BeanUtils.copyProperties(transacoesRecords,model);
         dados.add(model);
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
@@ -34,8 +39,10 @@ public class TransacoesService {
     }
 
     public  DoubleSummaryStatistics getStatics(){
+        OffsetDateTime now = OffsetDateTime.now();
         DoubleSummaryStatistics statistics =  dados
             .stream()
+            .filter((t)-> t.getDataHora().isBefore(now.minusSeconds(60)))
             .collect(Collectors.summarizingDouble(Transacoes::getValor));
             return statistics;
     }

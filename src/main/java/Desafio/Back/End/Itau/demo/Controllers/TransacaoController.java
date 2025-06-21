@@ -4,7 +4,6 @@ package Desafio.Back.End.Itau.demo.Controllers;
 import org.springframework.web.bind.annotation.RestController;
 import Desafio.Back.End.Itau.demo.Dtos.TransacoesRecords;
 import Desafio.Back.End.Itau.demo.Models.Statics;
-import Desafio.Back.End.Itau.demo.Models.Transacoes;
 import Desafio.Back.End.Itau.demo.Services.TransacoesService;
 import jakarta.validation.Valid;
 
@@ -28,7 +27,7 @@ public class TransacaoController {
     public TransacoesService transacoesService;
     
     @PostMapping("/transacao")
-    public ResponseEntity<Transacoes> createTrasacao(@RequestBody @Valid TransacoesRecords body) {
+    public ResponseEntity<Object> createTrasacao(@RequestBody @Valid TransacoesRecords body) {
         return transacoesService.criarTransacao(body);
     }
 
